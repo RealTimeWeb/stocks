@@ -1,0 +1,42 @@
+{
+	"metadata": {
+		"name": "Stock Service",
+		"description": "Get the latest information about stocks."
+	},
+	"domain": [{
+		"name": "Stock",
+        "description": "A structured representation of stock information, including ticker symbol, latest sale price, and price change since yesterday.",
+		"fields": [
+            {"name": "id", "type": "integer", "in": "id", "description": "The unique ID number for this ticker symbol"},
+            {"name": "ticker", "type": "string", "in": "t", "description": "The Ticker Symbol (e.g. AAPL)"},
+            {"name": "exchange", "type": "string", "in": "e", "description": "The name of the exchange (e.g. NASDAQ)"},
+            {"name": "last", "type": "float", "in": "l", "description": "The latest sale price for this stock."},
+            {"name": "last_trade_date", "type": "string", "in": "lt", "description": "The entire date of the last trade."},
+            {"name": "last_trade_time", "type": "string", "in": "ltt", "description": "The time of the last trade."},
+            {"name": "change", "type": "float", "in": "c", "description": "The price change since yesterday."},
+            {"name": "percent_change", "type": "float", "in": "cp", "description": "The percent price change since yesterday."}]
+	}],
+	"services": [{
+        "name": "Get Stock Information",
+		"url": "http://www.google.com/finance/info",
+		"type": "get",
+		"description": "Retrieves current stock information.",
+        "comment": "Might need to consume first two characters, which appear to be double slashes.",
+		"output": "list(Stock)",
+		"inputs": [{
+			"name": "q",
+            "clean": "ticker",
+			"type": "string",
+            "description": "A comma separated list of ticker symbols (e.g. \"AAPL, MSFT, CSCO\").",
+			"param": false,
+			"indexable": true
+		},{
+            "name": "client",
+            "default": "iq",
+			"type": "string",
+			"param": false,
+			"indexable": true,
+			"hidden": true
+        }]
+    }]
+}

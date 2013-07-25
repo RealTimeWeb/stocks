@@ -1,0 +1,79 @@
+#lang racket
+
+; Provide the external structs
+(provide (struct-out stock))
+
+; Provide the external functions
+(provide get-stock-information)
+(provide get-stock-information/string)
+(provide get-stock-information/json)
+(provide disconnect-stock-service)
+(provide connect-stock-service)
+
+; Load the internal libraries
+(require net/url)
+(require srfi/19)
+(require srfi/6)
+(require racket/port)
+(require json)
+(require net/uri-codec)
+
+; Define the structs
+(define-struct stock (id ticker exchange last last-trade-date last-trade-time change percent-change))
+
+(define (json->stock jdata)
+	(make-stock ( (hash-ref jdata 'id))
+			(hash-ref jdata 't)
+			(hash-ref jdata 'e)
+			( (hash-ref jdata 'l))
+			(hash-ref jdata 'lt)
+			(hash-ref jdata 'ltt)
+			( (hash-ref jdata 'c))
+			( (hash-ref jdata 'cp))))
+
+
+; Handle connections
+(define CONNECTION true)
+(define (disconnect-stock-service)
+	(set! CONNECTION false))
+(define (connect-stock-service)
+	(set! CONNECTION true))
+
+; Build Client Store
+(define CLIENT_STORE (read-json (open-input-file "cache.json")))
+
+(define (boolean->string a-boolean)
+	(if a-boolean
+		"true"
+		"false"))
+(define (string->boolean a-string)
+	(string=? a-string "true"))
+(define (key-value pair)
+	(string-append (symbol->string (car pair)) "=" (cdr pair)))
+(define (convert-post-args data)
+	(string->bytes/utf-8 (alist->form-urlencoded data)))
+(define (convert-get-args url data)
+	(string-append url "?" (string-join (map key-value data) "&")))
+(define (hash-request url data)
+	(string-append url "%{" (string-join (map key-value data) "}%{") "}"))
+(define (post->json url full-data index-data)
+	(if CONNECTION
+		(port->string (post-pure-port (string->url url) (convert-post-args full-data)))
+		(hash-ref CLIENT_STORE (hash-request url index-data) "")))
+(define (get->json url full-data index-data)
+	(if CONNECTION
+		(port->string (get-pure-port (string->url (convert-get-args url full-data))))
+		(hash-ref CLIENT_STORE (hash-request url index-data) "")))
+
+; Define the services, and their helpers
+(define (get-stock-information ticker)
+	(map json->stock (get-stock-information/json ticker)))
+
+(define (get-stock-information/json ticker)
+	(string->jsexpr (get-stock-information/string ticker)))
+
+(define (get-stock-information/string ticker)
+	(get->json (string-append "http://www.google.com/finance/info") 
+	 	(list (cons 'q ticker) (cons 'client "iq")) 
+	 	(list (cons 'q ticker) (cons 'client "iq"))))
+
