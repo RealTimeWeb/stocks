@@ -1,18 +1,15 @@
 package realtimeweb.stockservice.regular;
 
-import realtimeweb.stockservice.main.AbstractStockService;
-import realtimeweb.stockservice.json.JsonStockService;
-import realtimeweb.stockservice.util.Util;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+
 import realtimeweb.stockservice.domain.Stock;
 import realtimeweb.stockservice.json.JsonGetStockInformationListener;
+import realtimeweb.stockservice.json.JsonStockService;
+import realtimeweb.stockservice.main.AbstractStockService;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 
 /**
  * Used to get data as classes.
@@ -72,11 +69,11 @@ public class StockService implements AbstractStockService {
 	 * @return ArrayList<Stock>
 	 */
 	public ArrayList<Stock> getStockInformation(String ticker) throws Exception {
-		String response = jsonInstance.getStockInformation(ticker);
+		String response = jsonInstance.getStockInformation(ticker).substring(3);
 		JsonParser parser = new JsonParser();
 		JsonArray allChildren = parser.parse(response).getAsJsonArray();
 		ArrayList<Stock> result = new ArrayList<Stock>();
-		for (int i = 0; i < allChildren.size()-1; i += 1) {
+		for (int i = 0; i < allChildren.size(); i += 1) {
 			result.add(new Stock(allChildren.get(i).getAsJsonObject(), gson));
 		}
 		return result;
@@ -98,7 +95,7 @@ public class StockService implements AbstractStockService {
 		    @Override
 		    public void getStockInformationCompleted(String response) {
 		        JsonParser parser = new JsonParser();
-		      JsonArray allChildren = parser.parse(response).getAsJsonArray();
+		      JsonArray allChildren = parser.parse(response.substring(3)).getAsJsonArray();
 		        ArrayList<Stock> result = new ArrayList<Stock>();
 		        for (int i = 0; i < allChildren.size(); i += 1) {
 		            result.add(new Stock(allChildren.get(i).getAsJsonObject(), gson));

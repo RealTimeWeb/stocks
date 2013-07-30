@@ -1,12 +1,12 @@
 package realtimeweb.stockservice.structured;
 
-import realtimeweb.stockservice.main.AbstractStockService;
-import realtimeweb.stockservice.util.Util;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import com.google.gson.Gson;
-import realtimeweb.stockservice.json.JsonStockService;
+import java.util.ArrayList;
+
 import realtimeweb.stockservice.json.JsonGetStockInformationListener;
+import realtimeweb.stockservice.json.JsonStockService;
+import realtimeweb.stockservice.main.AbstractStockService;
+
+import com.google.gson.Gson;
 
 /**
  * Used to get data as built-in Java objects (HashMap, ArrayList, etc.).
@@ -65,8 +65,8 @@ public class StructuredStockService implements AbstractStockService {
 	 * @param ticker A comma separated list of ticker symbols (e.g. "AAPL, MSFT, CSCO").
 	 * @return HashMap<String, Object>
 	 */
-	public HashMap<String, Object> getStockInformation(String ticker) throws Exception {
-		return gson.fromJson(jsonInstance.getStockInformation(ticker), LinkedHashMap.class);
+	public ArrayList getStockInformation(String ticker) throws Exception {
+		return gson.fromJson(jsonInstance.getStockInformation(ticker).substring(3), ArrayList.class);
 	}
 	
 	/**
@@ -84,7 +84,7 @@ public class StructuredStockService implements AbstractStockService {
 		    
 		    @Override
 		    public void getStockInformationCompleted(String data) {
-		        callback.getStockInformationCompleted(gson.fromJson(data, LinkedHashMap.class));
+		        callback.getStockInformationCompleted(gson.fromJson(data.substring(3), ArrayList.class));
 		    }
 		});
 		

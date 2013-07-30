@@ -1,7 +1,8 @@
 package realtimeweb.stockservice.json;
 
-import realtimeweb.stockservice.main.AbstractStockService;
 import java.util.HashMap;
+
+import realtimeweb.stockservice.main.AbstractStockService;
 import realtimeweb.stockservice.util.Util;
 
 /**
@@ -71,7 +72,7 @@ public class JsonStockService implements AbstractStockService {
 	 * @return String
 	 */
 	public String getStockInformation(String ticker) throws Exception {
-		String url = String.format("http://www.google.com/finance/info", );
+		String url = String.format("http://www.google.com/finance/info", ticker);
 		HashMap<String, String> parameters = new HashMap<String, String>();
 		parameters.put("q", String.valueOf(ticker));
 		parameters.put("client", String.valueOf("iq"));

@@ -1,7 +1,7 @@
 package realtimeweb.stockservice.regular;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+
 import realtimeweb.stockservice.domain.Stock;
 /**
  * A listener for the getStockInformation method. On success, passes the data into the getStockInformationCompleted method. On failure, passes the exception to the getStockInformationFailed method.

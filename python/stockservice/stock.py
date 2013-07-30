@@ -5,6 +5,7 @@ class Stock(object):
     def __init__(self, id, ticker, exchange, last, last_trade_date, last_trade_time, change, percent_change):
         """
         Creates a new Stock
+        
         :param self: This object
         :type self: Stock
         :param id: The unique ID number for this ticker symbol
@@ -38,6 +39,7 @@ class Stock(object):
     def _from_json(json_data):
         """
         Creates a Stock from json data.
+        
         :param json_data: The raw json data to parse
         :type json_data: dict
         :returns: Stock
