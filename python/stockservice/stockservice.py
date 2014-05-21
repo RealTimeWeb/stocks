@@ -263,16 +263,21 @@ def _fetch_stock_info(params):
     result = result.replace("// ", "")  # Remove Strange Double Slashes
     result = result.replace("\n", "")  # Remove All New Lines
 
+    # TODO Check for the loads for a possible failure
     json_res = json.loads(result)
+    print(type(json_res))
+    print(json_res)
+    # sys.exit()
 
     # _get returns a string and json loads turns it into a list
     # _lookup returns a string and json loads turns it into a dict
     # even if one item is fetched from _get, there is still a list
     if isinstance(json_res, list):
         return json_res
-    elif isinstance(json_res, dict):
-        list_response = [json_res]
-        return list_response
+    # TODO Make the approtiate change since the cache now always returns a list
+    # elif isinstance(json_res, dict):
+    #     list_response = [json_res]
+    #     return list_response
     else:
         raise StockServiceException("There was an internal error")
 
@@ -287,4 +292,10 @@ def get_stock_information(tickers):
 
     params = {'q': tickers}
     json_res = _fetch_stock_info(params)
-    return json_res
+
+    stock = Stock._from_json(json_res)
+    return stock._to_dict()
+
+    # TODO create an object from the json and return the object._to_dict()
+    #
+    # return json_res
