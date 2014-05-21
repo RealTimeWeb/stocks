@@ -1,0 +1,263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Welcome to stockservice’s documentation! &mdash; stockservice 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="stockservice 0.1 documentation" href="#" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="#">stockservice 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="welcome-to-stockservice-s-documentation">
+<h1>Welcome to stockservice&#8217;s documentation!<a class="headerlink" href="#welcome-to-stockservice-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="exceptions">
+<h2>Exceptions<a class="headerlink" href="#exceptions" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="stockservice.StockServiceException">
+<em class="property">exception </em><tt class="descclassname">stockservice.</tt><tt class="descname">StockServiceException</tt><a class="headerlink" href="#stockservice.StockServiceException" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="stockservice._iteritems">
+<tt class="descclassname">stockservice.</tt><tt class="descname">_iteritems</tt><big>(</big><em>dict_</em><big>)</big><a class="headerlink" href="#stockservice._iteritems" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Internal method to factor-out Py2-to-3 differences in dictionary item</dt>
+<dd>iterator methods</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dict</strong> (<em>dict</em>) &#8211; the dictionary to parse</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the iterable dictionary</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="stockservice._get">
+<tt class="descclassname">stockservice.</tt><tt class="descname">_get</tt><big>(</big><em>url</em><big>)</big><a class="headerlink" href="#stockservice._get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal method to convert a URL into it&#8217;s response (a <em>str</em>).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>url</strong> (<em>str</em>) &#8211; the url to request a response from</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the <em>str</em> response</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="stockservice._urlencode">
+<tt class="descclassname">stockservice.</tt><tt class="descname">_urlencode</tt><big>(</big><em>query</em>, <em>params</em><big>)</big><a class="headerlink" href="#stockservice._urlencode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal method to combine the url and params into a single url string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>query</strong> (<em>str</em>) &#8211; the base url to query</li>
+<li><strong>params</strong> (<em>dict</em>) &#8211; the parameters to send to the url</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a <em>str</em> of the full url</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="stockservice._lookup">
+<tt class="descclassname">stockservice.</tt><tt class="descname">_lookup</tt><big>(</big><em>key</em><big>)</big><a class="headerlink" href="#stockservice._lookup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal method that looks up a key in the local cache.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) &#8211; Get the value based on the key from the cache.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="stockservice._recursively_convert_unicode_to_str">
+<tt class="descclassname">stockservice.</tt><tt class="descname">_recursively_convert_unicode_to_str</tt><big>(</big><em>input</em><big>)</big><a class="headerlink" href="#stockservice._recursively_convert_unicode_to_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Force the given input to only use <cite>str</cite> instead of <cite>bytes</cite> or <cite>unicode</cite>.</p>
+<p>This works even if the input is a dict, list,</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="stockservice.connect">
+<tt class="descclassname">stockservice.</tt><tt class="descname">connect</tt><big>(</big><big>)</big><a class="headerlink" href="#stockservice.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect to the online data source in order to get up-to-date information.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="stockservice.disconnect">
+<tt class="descclassname">stockservice.</tt><tt class="descname">disconnect</tt><big>(</big><big>)</big><a class="headerlink" href="#stockservice.disconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect to the local cache, so no internet connection is required.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="stockservice._send_query">
+<tt class="descclassname">stockservice.</tt><tt class="descname">_send_query</tt><big>(</big><em>params</em><big>)</big><a class="headerlink" href="#stockservice._send_query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal method to form and query the server</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>params</strong> (<em>dict</em>) &#8211; the parameters to pass to the server</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the JSON response object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="stockservice._get_stock_dict">
+<tt class="descclassname">stockservice.</tt><tt class="descname">_get_stock_dict</tt><big>(</big><em>json_res</em><big>)</big><a class="headerlink" href="#stockservice._get_stock_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal method to return the dict from the JSON response</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a <em>dict</em> of the JSON response</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="stockservice.get_stock_information">
+<tt class="descclassname">stockservice.</tt><tt class="descname">get_stock_information</tt><big>(</big><em>tickers</em><big>)</big><a class="headerlink" href="#stockservice.get_stock_information" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves current stock information.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ticker</strong> (<em>string</em>) &#8211; A comma separated list of ticker symbols (e.g. &#8220;AAPL, MSFT, CSCO&#8221;).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Welcome to stockservice&#8217;s documentation!</a><ul>
+<li><a class="reference internal" href="#exceptions">Exceptions</a></li>
+<li><a class="reference internal" href="#methods">Methods</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="#">stockservice 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, acbart.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
