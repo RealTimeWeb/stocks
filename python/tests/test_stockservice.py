@@ -18,10 +18,11 @@ class TestStockService(unittest.TestCase):
 
         # Test getting one stock
         stocks = stockservice.get_stock_information("AAPL")
-        self.assertTrue(isinstance(stocks, dict))
+        self.assertTrue(isinstance(stocks, list))
+        stock = stocks[0]
 
         # Assert all of the keys are in the stock
-        intersection = set(keys).intersection(stocks)
+        intersection = set(keys).intersection(stock)
         self.assertEqual(16, len(intersection))
 
         # Test getting two stocks
@@ -30,8 +31,8 @@ class TestStockService(unittest.TestCase):
         self.assertTrue(len(stocks) == 2)
 
         # Assert all of the keys are in the stocks
-        for dict_res in stocks:
-            intersection = set(keys).intersection(dict_res)
+        for stock in stocks:
+            intersection = set(keys).intersection(stock)
             self.assertEqual(16, len(intersection))
 
     def test_get_stock_offline(self):
@@ -43,10 +44,11 @@ class TestStockService(unittest.TestCase):
 
         # Test getting one stock
         stocks = stockservice.get_stock_information("AAPL")
-        self.assertTrue(isinstance(stocks, dict))
+        self.assertTrue(isinstance(stocks, list))
+        stock = stocks[0]
 
         # Assert all of the keys are in the stock
-        intersection = set(keys).intersection(stocks)
+        intersection = set(keys).intersection(stock)
         self.assertEqual(16, len(intersection))
 
     def test_throw_exception(self):
@@ -66,3 +68,17 @@ class TestStockService(unittest.TestCase):
             stockservice.get_stock_information("INVALID_STOCK")
 
         self.assertEqual('Make sure you entered a valid stock option', context.exception.args[0])
+
+    def test_get_json(self):
+
+        appl = stockservice.Stock(-1.16, -0.19, 'NASDAQ', 603.55, 'May 21, 11:26AM EDT','AAPL')
+        appl_dict = appl._to_dict()
+
+        stock_empty = stockservice.Stock()
+        stockservice.disconnect("../stockservice/cache.json")
+        json_list = stockservice.get_stock_information("AAPL")
+        cache_stock = stock_empty._from_json(json_list[0])
+        cache_dict = cache_stock._to_dict()
+
+        self.assertDictEqual(cache_dict, appl_dict)
+

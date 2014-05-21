@@ -17,8 +17,21 @@ else:
     import urllib2
     from urllib import quote_plus
 
-# Helpers to Copy into Other Libraries
+################################################################################
+# Auxilary
+################################################################################
 
+
+def _parse_float(value, default=0.0):
+    """
+    Attempt to cast *value* into a float, returning *default* if it fails.
+    """
+    if value is None:
+        return default
+    try:
+        return float(value)
+    except ValueError:
+        return default
 
 def _iteritems(dict_):
     """
@@ -32,6 +45,18 @@ def _iteritems(dict_):
         return dict_.items()
     else:
         return dict_.iteritems()
+
+
+def _urlencode(query, params):
+    """
+    Internal method to combine the url and params into a single url string.
+
+    :param str query: the base url to query
+    :param dict params: the parameters to send to the url
+    :returns: a *str* of the full url
+    """
+    return query + '?' + '&'.join(key+'='+quote_plus(str(value))
+                                  for key, value in _iteritems(params))
 
 
 def _get(url):
@@ -51,17 +76,25 @@ def _get(url):
         return response.read()
 
 
-def _urlencode(query, params):
+def _recursively_convert_unicode_to_str(input):
     """
-    Internal method to combine the url and params into a single url string.
+    Force the given input to only use `str` instead of `bytes` or `unicode`.
 
-    :param str query: the base url to query
-    :param dict params: the parameters to send to the url
-    :returns: a *str* of the full url
+    This works even if the input is a dict, list,
     """
-    return query + '?' + '&'.join(key+'='+quote_plus(str(value))
-                                  for key, value in _iteritems(params))
+    if isinstance(input, dict):
+        return {_recursively_convert_unicode_to_str(key): _recursively_convert_unicode_to_str(value) for key, value in input.items()}
+    elif isinstance(input, list):
+        return [_recursively_convert_unicode_to_str(element) for element in input]
+    elif not PYTHON_3:
+        return input.encode('utf-8')
+    else:
+        return input
 
+
+################################################################################
+# Cache
+################################################################################
 
 def _lookup(key):
     """
@@ -90,22 +123,6 @@ def _lookup(key):
         return ""
 
 
-def _recursively_convert_unicode_to_str(input):
-    """
-    Force the given input to only use `str` instead of `bytes` or `unicode`.
-
-    This works even if the input is a dict, list,
-    """
-    if isinstance(input, dict):
-        return {_recursively_convert_unicode_to_str(key): _recursively_convert_unicode_to_str(value) for key, value in input.items()}
-    elif isinstance(input, list):
-        return [_recursively_convert_unicode_to_str(element) for element in input]
-    elif not PYTHON_3:
-        return input.encode('utf-8')
-    else:
-        return input
-
-
 def connect():
     """
     Connect to the online data source in order to get up-to-date information.
@@ -132,14 +149,94 @@ def disconnect(filename="./cache.json"):
         _CACHE_COUNTER[key] = 0
     _CONNECTED = False
 
-# Library Specific Functions and Classes
+################################################################################
+# Exceptions
+################################################################################
 
 
 class StockServiceException(Exception):
     pass
 
+################################################################################
+# Domain Objects
+################################################################################
 
-def _send_query(params):
+
+class Stock(object):
+
+    """
+    A Stock object containing information regarding a ticker
+    """
+    def __init__(self, chg_num=None, chg_per=None, ex_name=None,
+                 lst_trd_price=None, lst_trd_date_time=None, tick=None):
+
+        self.change_number = _parse_float(chg_num)              # c
+        self.change_percentage = _parse_float(chg_per)          # cp
+        self.exchange_name = ex_name                            # e
+        self.last_trade_price = _parse_float(lst_trd_price)     # l
+        self.last_trade_date_and_time = lst_trd_date_time       # lt
+        self.ticker = tick                                      # s
+
+    def __unicode__(self):
+        string = """
+        <Stock Change: {}, Change (Percentage): {}, Exchange Name: {},
+        Last Trade Price: {}, Last Trade Date and Time: {}, Ticker: {}>
+        """
+        return string.format(self.change_number,
+                             self.change_percentage,
+                             self.exchange_name,
+                             self.last_trade_price,
+                             self.last_trade_date_and_time,
+                             self.ticker)
+
+    def __repr__(self):
+        string = self.__unicode__()
+
+        if not PYTHON_3:
+            return string.encode('utf-8')
+
+        return string
+
+    def __str__(self):
+        string = self.__unicode__()
+
+        if not PYTHON_3:
+            return string.encode('utf-8')
+
+        return string
+
+    def _to_dict(self):
+        return {'change_number': self.change_number,
+                'change_percentage': self.change_percentage,
+                'exchange_name': self.exchange_name,
+                'last_trade_price': self.last_trade_price,
+                'last_trade_date_and_time': self.last_trade_date_and_time,
+                'ticker': self.ticker}
+
+    @staticmethod
+    def _from_json(json_data):
+        # Assuming json_data is a dict
+        if json_data is None:
+            return Stock()
+        try:
+            chg_num = _parse_float(json_data['c'])
+            chg_per = _parse_float(json_data['cp'])
+            ex_name = json_data['e']
+            lst_trd_price = _parse_float(json_data['l'])
+            lst_trd_date_time = json_data['lt']
+            tick = json_data['t']
+            stock = Stock(chg_num, chg_per, ex_name, lst_trd_price, lst_trd_date_time, tick)
+            return stock
+        except KeyError:
+            raise StockServiceException("The given information was incomplete.")
+
+
+################################################################################
+# Service Methods
+################################################################################
+
+
+def _fetch_stock_info(params):
     """
     Internal method to form and query the server
 
@@ -163,51 +260,31 @@ def _send_query(params):
     if not result:
         raise StockServiceException("There were no results")
 
-    result = result.replace("// ", "") # Remove Strange Double Slashes
-    result = result.replace("\n", "") # Remove All New Lines
+    result = result.replace("// ", "")  # Remove Strange Double Slashes
+    result = result.replace("\n", "")  # Remove All New Lines
 
     json_res = json.loads(result)
 
     # _get returns a string and json loads turns it into a list
     # _lookup returns a string and json loads turns it into a dict
-    if (isinstance(json_res, list)):
-        # even if one item is fetched from _get, there is still a list
-        if len(json_res) == 1:
-            return json_res[0]
-        else:
-            return json_res
-    elif (isinstance(json_res, dict)):
+    # even if one item is fetched from _get, there is still a list
+    if isinstance(json_res, list):
         return json_res
+    elif isinstance(json_res, dict):
+        list_response = [json_res]
+        return list_response
     else:
         raise StockServiceException("There was an internal error")
-
-
-def _get_stock_dict(json_res):
-    """
-    Internal method to return the dict from the JSON response
-
-    :returns: a *dict* of the JSON response
-    """
-
-    if isinstance(json_res, dict) or isinstance(json_res, list):
-        return json_res
-    else:
-        raise StockServiceException("There was an internal error")
-
 
 
 def get_stock_information(tickers):
     """
     Retrieves current stock information.
 
-    :param ticker: A comma separated list of ticker symbols (e.g. "AAPL, MSFT, CSCO").
-    :type ticker: string
-    :returns: dict
     """
     if not isinstance(tickers, str):
         raise StockServiceException("Please enter a string of Stock Tickers")
 
     params = {'q': tickers}
-    json_res = _send_query(params)
-
-    return _get_stock_dict(json_res)
+    json_res = _fetch_stock_info(params)
+    return json_res
