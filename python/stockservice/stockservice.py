@@ -171,7 +171,11 @@ def _send_query(params):
     # _get returns a string and json loads turns it into a list
     # _lookup returns a string and json loads turns it into a dict
     if (isinstance(json_res, list)):
-        return json_res[0]
+        # even if one item is fetched from _get, there is still a list
+        if len(json_res) == 1:
+            return json_res[0]
+        else:
+            return json_res
     elif (isinstance(json_res, dict)):
         return json_res
     else:
@@ -185,10 +189,11 @@ def _get_stock_dict(json_res):
     :returns: a *dict* of the JSON response
     """
 
-    if not isinstance(json_res, dict):
+    if isinstance(json_res, dict) or isinstance(json_res, list):
+        return json_res
+    else:
         raise StockServiceException("There was an internal error")
 
-    return json_res
 
 
 def get_stock_information(tickers):

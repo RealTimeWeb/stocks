@@ -24,6 +24,16 @@ class TestStockService(unittest.TestCase):
         intersection = set(keys).intersection(stocks)
         self.assertEqual(16, len(intersection))
 
+        # Test getting two stocks
+        stocks = stockservice.get_stock_information("AAPL,GOOG")
+        self.assertTrue(isinstance(stocks, list))
+        self.assertTrue(len(stocks) == 2)
+
+        # Assert all of the keys are in the stocks
+        for dict_res in stocks:
+            intersection = set(keys).intersection(dict_res)
+            self.assertEqual(16, len(intersection))
+
     def test_get_stock_offline(self):
         stockservice.disconnect("../stockservice/cache.json")
 
@@ -53,6 +63,6 @@ class TestStockService(unittest.TestCase):
         self.assertEqual('Please enter a string of Stock Tickers', context.exception.args[0])
 
         with self.assertRaises(stockservice.StockServiceException) as context:
-            stockservice.get_stock_information("SDSDFSDFSDFSDFSDFSDF")
+            stockservice.get_stock_information("INVALID_STOCK")
 
         self.assertEqual('Make sure you entered a valid stock option', context.exception.args[0])
