@@ -17,9 +17,7 @@ else:
     import urllib2
     from urllib import quote_plus
 
-
-class StockServiceException(Exception):
-    pass
+# Helpers to Copy into Other Libraries
 
 
 def _iteritems(dict_):
@@ -92,16 +90,6 @@ def _lookup(key):
         return ""
 
 
-def connect():
-    """
-    Connect to the online data source in order to get up-to-date information.
-
-    :returns: void
-    """
-    global _CONNECTED
-    _CONNECTED = True
-
-
 def _recursively_convert_unicode_to_str(input):
     """
     Force the given input to only use `str` instead of `bytes` or `unicode`.
@@ -117,6 +105,15 @@ def _recursively_convert_unicode_to_str(input):
     else:
         return input
 
+
+def connect():
+    """
+    Connect to the online data source in order to get up-to-date information.
+
+    :returns: void
+    """
+    global _CONNECTED
+    _CONNECTED = True
 
 
 def disconnect(filename="./cache.json"):
@@ -135,6 +132,13 @@ def disconnect(filename="./cache.json"):
         _CACHE_COUNTER[key] = 0
     _CONNECTED = False
 
+# Library Specific Functions and Classes
+
+
+class StockServiceException(Exception):
+    pass
+
+
 def _send_query(params):
     """
     Internal method to form and query the server
@@ -144,16 +148,17 @@ def _send_query(params):
     """
     baseurl = 'https://www.google.com/finance/info'
     query = _urlencode(baseurl, params)
-    # query = ''.join((query, '&sensor=false'))
 
-    print(query)
-    # _get returns a string and json loads turns it into a list
-    # _lookup returns a string and json loads turns it into a dict
-
-    try:
-        result = _get(query) if _CONNECTED else _lookup(query)
-    except urllib.error.HTTPError:
-        raise StockServiceException("Make sure you entered a valid stock option")
+    if PYTHON_3:
+        try:
+            result = _get(query) if _CONNECTED else _lookup(query)
+        except urllib.error.HTTPError:
+            raise StockServiceException("Make sure you entered a valid stock option")
+    else:
+        try:
+            result = _get(query) if _CONNECTED else _lookup(query)
+        except urllib2.HTTPError:
+            raise StockServiceException("Make sure you entered a valid stock option")
 
     if not result:
         raise StockServiceException("There were no results")
@@ -162,16 +167,6 @@ def _send_query(params):
     result = result.replace("\n", "") # Remove All New Lines
 
     json_res = json.loads(result)
-    return json_res
-
-
-def _get_stock_info(json_res):
-    """
-    Internal method to return the dict from the JSON response
-
-
-    :returns: a *dict* of the JSON response
-    """
 
     # _get returns a string and json loads turns it into a list
     # _lookup returns a string and json loads turns it into a dict
@@ -179,7 +174,21 @@ def _get_stock_info(json_res):
         return json_res[0]
     elif (isinstance(json_res, dict)):
         return json_res
-    return ""
+    else:
+        raise StockServiceException("There was an internal error")
+
+
+def _get_stock_dict(json_res):
+    """
+    Internal method to return the dict from the JSON response
+
+    :returns: a *dict* of the JSON response
+    """
+
+    if not isinstance(json_res, dict):
+        raise StockServiceException("There was an internal error")
+
+    return json_res
 
 
 def get_stock_information(tickers):
@@ -194,7 +203,6 @@ def get_stock_information(tickers):
         raise StockServiceException("Please enter a string of Stock Tickers")
 
     params = {'q': tickers}
-
     json_res = _send_query(params)
 
-    return _get_stock_info(json_res)
+    return _get_stock_dict(json_res)
