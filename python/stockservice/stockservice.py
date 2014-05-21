@@ -2,7 +2,7 @@ from __future__ import print_function
 import sys
 import json
 
-HEADER = {'User-Agent': 'RealTimeWeb Geocode library for educational purposes'}
+HEADER = {'User-Agent': 'RealTimeWeb Stock library for educational purposes'}
 PYTHON_3 = sys.version_info >= (3, 0)
 
 _CACHE = {}
@@ -10,6 +10,7 @@ _CACHE_COUNTER = {}
 _CONNECTED = False
 
 if PYTHON_3:
+    import urllib.error
     import urllib.request as request
     from urllib.parse import quote_plus
 else:
@@ -64,24 +65,10 @@ def _urlencode(query, params):
                                   for key, value in _iteritems(params))
 
 
-def _recursively_convert_unicode_to_str(input):
-    """
-    Force the given input to only use `str` instead of `bytes` or `unicode`.
-    This works even if the input is a dict, list,
-    """
-    if isinstance(input, dict):
-        return {_recursively_convert_unicode_to_str(key): _recursively_convert_unicode_to_str(value) for key, value in input.items()}
-    elif isinstance(input, list):
-        return [_recursively_convert_unicode_to_str(element) for element in input]
-    elif not PYTHON_3:
-        return input.encode('utf-8')
-    else:
-        return input
-
-
 def _lookup(key):
     """
     Internal method that looks up a key in the local cache.
+
     :param key: Get the value based on the key from the cache.
     :type key: string
     :returns: void
@@ -108,29 +95,91 @@ def _lookup(key):
 def connect():
     """
     Connect to the online data source in order to get up-to-date information.
+
     :returns: void
     """
     global _CONNECTED
     _CONNECTED = True
 
-def _form_query(params):
+
+def _recursively_convert_unicode_to_str(input):
+    """
+    Force the given input to only use `str` instead of `bytes` or `unicode`.
+
+    This works even if the input is a dict, list,
+    """
+    if isinstance(input, dict):
+        return {_recursively_convert_unicode_to_str(key): _recursively_convert_unicode_to_str(value) for key, value in input.items()}
+    elif isinstance(input, list):
+        return [_recursively_convert_unicode_to_str(element) for element in input]
+    elif not PYTHON_3:
+        return input.encode('utf-8')
+    else:
+        return input
+
+
+
+def disconnect(filename="./cache.json"):
+    """
+    Connect to the local cache, so no internet connection is required.
+
+    :returns: void
+    """
+    global _CONNECTED, _CACHE
+    try:
+        with open(filename, 'r') as f:
+            _CACHE = _recursively_convert_unicode_to_str(json.load(f))['data']
+    except (OSError, IOError) as e:
+        raise StockServiceException("The cache file '{}' was not found.".format(filename))
+    for key in _CACHE.keys():
+        _CACHE_COUNTER[key] = 0
+    _CONNECTED = False
+
+def _send_query(params):
     """
     Internal method to form and query the server
 
     :param dict params: the parameters to pass to the server
-    :returns: a *dict* of the JSON response
+    :returns: the JSON response object
     """
     baseurl = 'https://www.google.com/finance/info'
     query = _urlencode(baseurl, params)
-    query = ''.join((query, '&sensor=false'))
+    # query = ''.join((query, '&sensor=false'))
 
-    result = _get(query) if _CONNECTED else _lookup(query)
+    print(query)
+    # _get returns a string and json loads turns it into a list
+    # _lookup returns a string and json loads turns it into a dict
 
-    result = result.replace("// ", "") # Remove Strange Double Slashes in Google Finance
-    result = result.replace("\n", "") # Remove All New Lines ..
+    try:
+        result = _get(query) if _CONNECTED else _lookup(query)
+    except urllib.error.HTTPError:
+        raise StockServiceException("Make sure you entered a valid stock option")
+
+    if not result:
+        raise StockServiceException("There were no results")
+
+    result = result.replace("// ", "") # Remove Strange Double Slashes
+    result = result.replace("\n", "") # Remove All New Lines
 
     json_res = json.loads(result)
     return json_res
+
+
+def _get_stock_info(json_res):
+    """
+    Internal method to return the dict from the JSON response
+
+
+    :returns: a *dict* of the JSON response
+    """
+
+    # _get returns a string and json loads turns it into a list
+    # _lookup returns a string and json loads turns it into a dict
+    if (isinstance(json_res, list)):
+        return json_res[0]
+    elif (isinstance(json_res, dict)):
+        return json_res
+    return ""
 
 
 def get_stock_information(tickers):
@@ -139,21 +188,13 @@ def get_stock_information(tickers):
 
     :param ticker: A comma separated list of ticker symbols (e.g. "AAPL, MSFT, CSCO").
     :type ticker: string
-    :returns: string
+    :returns: dict
     """
-    if isinstance(tickers, list):
-        tickers = ','.join(tickers)
+    if not isinstance(tickers, str):
+        raise StockServiceException("Please enter a string of Stock Tickers")
 
-    params = {'infotype': 'infoquoteall', 'q': tickers}
+    params = {'q': tickers}
 
-    json_res = _form_query(params)
+    json_res = _send_query(params)
 
-    print(json_res)
-
-    #
-    # if _using_cache:
-    #     result = cache.lookup(("http://www.google.com/finance/info") + "%{q=" + ticker+ "}""%{client=" + "iq"+ "}")
-    #     return result
-    # else:
-    #     result = requests.get("http://www.google.com/finance/info", params = {"q" : ticker, "client" : "iq"})
-    #     return result.text
+    return _get_stock_info(json_res)
