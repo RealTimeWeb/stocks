@@ -3,6 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+
+
 Welcome to stockservice's documentation!
 ========================================
 
@@ -12,10 +14,14 @@ Exceptions
 .. autoexception:: stockservice.StockServiceException
 
 
+Classes
+-------
+.. autoclass:: stockservice.Stock
+
 Methods
 -------
 
-.. autofunction:: stockservice._iteritems(dict_)
+.. autofunction:: stockservice._iteritems(_dict)
 
 .. autofunction:: stockservice._get(url)
 
@@ -29,8 +35,6 @@ Methods
 
 .. autofunction:: stockservice.disconnect()
 
-.. autofunction:: stockservice._send_query(params)
-
-.. autofunction:: stockservice._get_stock_dict(json_res)
+.. autofunction:: stockservice._fetch_stock_info(params)
 
 .. autofunction:: stockservice.get_stock_information(tickers)

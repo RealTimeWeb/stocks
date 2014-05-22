@@ -234,6 +234,9 @@ class Stock(object):
         self.ticker = tick                                      # s
 
     def __unicode__(self):
+        """
+        Unicode
+        """
         string = """
         <Stock Change: {}, Change (Percentage): {}, Exchange Name: {},
         Last Trade Price: {}, Last Trade Date and Time: {}, Ticker: {}>
@@ -246,6 +249,9 @@ class Stock(object):
                              self.ticker)
 
     def __repr__(self):
+        """
+        repr
+        """
         string = self.__unicode__()
 
         if not PYTHON_3:
@@ -254,6 +260,9 @@ class Stock(object):
         return string
 
     def __str__(self):
+        """
+        str
+        """
         string = self.__unicode__()
 
         if not PYTHON_3:
