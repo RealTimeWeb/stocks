@@ -116,6 +116,4 @@ coverage.xml
 # Django stuff:
 *.log
 
-# Sphinx documentation
-# python/docs/_build/
 
