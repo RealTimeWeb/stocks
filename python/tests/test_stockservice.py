@@ -8,7 +8,7 @@ class TestStockService(unittest.TestCase):
         stockservice.connect()
 
         keys = ['change_number', 'change_percentage', 'exchange_name',
-                'last_trade_date_and_time', 'last_trade_price', 'ticker']
+                'last_trade_date_and_time', 'last_trade_price', 'ticker_name']
 
         # Test getting one stock
         stock = stockservice.get_stock_information("AAPL")
@@ -22,7 +22,7 @@ class TestStockService(unittest.TestCase):
         stockservice.disconnect("../stockservice/cache.json")
 
         keys = ['change_number', 'change_percentage', 'exchange_name',
-                'last_trade_date_and_time', 'last_trade_price', 'ticker']
+                'last_trade_date_and_time', 'last_trade_price', 'ticker_name']
 
         # Test getting one stock
         stock = stockservice.get_stock_information("AAPL")
@@ -48,7 +48,7 @@ class TestStockService(unittest.TestCase):
         with self.assertRaises(stockservice.StockServiceException) as context:
             stockservice.get_stock_information("INVALID_STOCK")
 
-        self.assertEqual('Make sure you entered a valid stock option', context.exception.args[0])
+        self.assertEqual('Make sure you entered a valid stock', context.exception.args[0])
 
     def test_get_json(self):
 

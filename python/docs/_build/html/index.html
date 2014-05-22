@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Welcome to stockservice’s documentation! &mdash; stockservice 0.1 documentation</title>
+    <title>Welcome to Stock Service’s documentation! &mdash; stockservice 0.1 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -41,27 +41,92 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="welcome-to-stockservice-s-documentation">
-<h1>Welcome to stockservice&#8217;s documentation!<a class="headerlink" href="#welcome-to-stockservice-s-documentation" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="welcome-to-stock-service-s-documentation">
+<h1>Welcome to Stock Service&#8217;s documentation!<a class="headerlink" href="#welcome-to-stock-service-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>The Stock Service library offers access to the Google&#8217;s Finance feed.
+This is stock data available from U.S. exchanges such as NASDAQ and NYSE and
+covers a wide variety of stocks.</p>
+<p>The information that is available includes the change for a stock since the
+opening bell, the percentage change for a stock since the opening bell, the
+exchange that a stock is listed under, the last trade price for a stock,
+the last trade date and time for a stock, and the ticker name for a stock</p>
+<dl class="docutils">
+<dt>Note that this data stream has a very high velocity - if you check every five</dt>
+<dd>minutes, you&#8217;ll find it may have already changed.</dd>
+</dl>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">stockservice</span>
+</pre></div>
+</div>
+<p>You can get information for any stock, for example let&#8217;s get information for Apple</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">stock_dict</span> <span class="o">=</span> <span class="n">stockservice</span><span class="o">.</span><span class="n">get_stock_information</span><span class="p">(</span><span class="s">&quot;AAPL&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stock_dict</span>
+<span class="go">{&#39;last_trade_date_and_time&#39;: u&#39;May 22, 11:25AM EDT&#39;, &#39;ticker_name&#39;: u&#39;AAPL&#39;,</span>
+<span class="go">&#39;last_trade_price&#39;: 605.51, &#39;exchange_name&#39;: u&#39;NASDAQ&#39;,</span>
+<span class="go">&#39;change_percentage&#39;: -0.13, &#39;change_number&#39;: -0.8}</span>
+</pre></div>
+</div>
+<p>The built-in cache allows you to work online:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">stockservice</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="c"># unnecessary: default is connected</span>
+</pre></div>
+</div>
+<p>or offline:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">stockservice</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stockservice</span><span class="o">.</span><span class="n">get_stock_information</span><span class="p">(</span><span class="s">&quot;AAPL&quot;</span><span class="p">)</span>
+<span class="go">{&#39;last_trade_date_and_time&#39;: u&#39;May 21, 11:26AM EDT&#39;, &#39;ticker_name&#39;: u&#39;AAPL&#39;, &#39;last_trade_price&#39;: 603.55, &#39;exchange_name&#39;: u&#39;NASDAQ&#39;, &#39;change_percentage&#39;: -0.19, &#39;change_number&#39;: -1.16}</span>
+</pre></div>
+</div>
+<p>But remember there must be data in the cache already!</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">stock</span> <span class="o">=</span> <span class="n">stockservice</span><span class="o">.</span><span class="n">get_stock_information</span><span class="p">(</span><span class="s">&quot;AAPL&quot;</span><span class="p">)</span>
+<span class="go">stockservice.StockServiceException: There were no results</span>
+</pre></div>
+</div>
+<div class="section" id="populating-the-cache">
+<h2>Populating the cache<a class="headerlink" href="#populating-the-cache" title="Permalink to this headline">¶</a></h2>
+<p>Say you want to add Apple&#8217;s stock (AAPL) to the cache</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">stockservice</span><span class="o">.</span><span class="n">_start_editing</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stock</span> <span class="o">=</span> <span class="n">stockservice</span><span class="o">.</span><span class="n">get_stock_information</span><span class="p">(</span><span class="s">&quot;AAPL&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stockservice</span><span class="o">.</span><span class="n">_save_cache</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Now the file &#8220;cache.json&#8221; file will have an entry for (&#8220;AAPL&#8221;), and
+you can use that as an input to the function when disconnected.</p>
+<p>You can also create a different cache file by passing a filename to the
+_save_cache() method, and use that cache by passing its name to the
+disconnect() method.</p>
+<p>For example, this will populate a file called &#8220;goog.json&#8221;, which will contain
+stock information for google</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">stockservice</span><span class="o">.</span><span class="n">_start_editing</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">goog_stock</span> <span class="o">=</span> <span class="n">stockservice</span><span class="o">.</span><span class="n">get_stock_information</span><span class="p">(</span><span class="s">&quot;GOOG&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stockservice</span><span class="o">.</span><span class="n">_save_cache</span><span class="p">(</span><span class="s">&#39;goog.json&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To use that cached file, specify the json file name when you call disconnect():</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">stockservice</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="s">&quot;goog.json&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Finally, you can put multiple entries into the cache for a given input, simulating multiple calls. These items will be appended. If the cache runs out, it will start returning empty reports.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">stockservice</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stockservice</span><span class="o">.</span><span class="n">_start_editing</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">goog_stock</span> <span class="o">=</span> <span class="n">stockservice</span><span class="o">.</span><span class="n">get_stock_information</span><span class="p">(</span><span class="s">&quot;GOOG&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">aapl_stock</span> <span class="o">=</span> <span class="n">stockservice</span><span class="o">.</span><span class="n">get_stock_information</span><span class="p">(</span><span class="s">&quot;AAPL&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stockservice</span><span class="o">.</span><span class="n">_save_cache</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stockservice</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stockservice</span><span class="o">.</span><span class="n">get_stock_information</span><span class="p">(</span><span class="s">&quot;GOOG&quot;</span><span class="p">)</span>
+<span class="go">{&#39;last_trade_date_and_time&#39;: u&#39;May 22, 12:40PM EDT&#39;, &#39;ticker_name&#39;: u&#39;GOOG&#39;, &#39;last_trade_price&#39;: 542.66, &#39;exchange_name&#39;: u&#39;NASDAQ&#39;, &#39;change_percentage&#39;: 0.69, &#39;change_number&#39;: 3.72}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stockservice</span><span class="o">.</span><span class="n">get_stock_information</span><span class="p">(</span><span class="s">&quot;AAPL&quot;</span><span class="p">)</span>
+<span class="go">{&#39;last_trade_date_and_time&#39;: u&#39;May 21, 11:26AM EDT&#39;, &#39;ticker_name&#39;: u&#39;AAPL&#39;, &#39;last_trade_price&#39;: 603.55, &#39;exchange_name&#39;: u&#39;NASDAQ&#39;, &#39;change_percentage&#39;: -0.19, &#39;change_number&#39;: -1.16}</span>
+</pre></div>
+</div>
 <div class="section" id="exceptions">
-<h2>Exceptions<a class="headerlink" href="#exceptions" title="Permalink to this headline">¶</a></h2>
+<h3>Exceptions<a class="headerlink" href="#exceptions" title="Permalink to this headline">¶</a></h3>
 <dl class="exception">
 <dt id="stockservice.StockServiceException">
 <em class="property">exception </em><tt class="descclassname">stockservice.</tt><tt class="descname">StockServiceException</tt><a class="headerlink" href="#stockservice.StockServiceException" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
-<div class="section" id="classes">
-<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="stockservice.Stock">
-<em class="property">class </em><tt class="descclassname">stockservice.</tt><tt class="descname">Stock</tt><big>(</big><em>chg_num=None</em>, <em>chg_per=None</em>, <em>ex_name=None</em>, <em>lst_trd_price=None</em>, <em>lst_trd_date_time=None</em>, <em>tick=None</em><big>)</big><a class="headerlink" href="#stockservice.Stock" title="Permalink to this definition">¶</a></dt>
-<dd><p>A Stock object containing information regarding a ticker</p>
-</dd></dl>
-
-</div>
 <div class="section" id="methods">
-<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
+<h3>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="stockservice._iteritems">
 <tt class="descclassname">stockservice.</tt><tt class="descname">_iteritems</tt><big>(</big><em>_dict</em><big>)</big><a class="headerlink" href="#stockservice._iteritems" title="Permalink to this definition">¶</a></dt>
@@ -193,6 +258,7 @@
 
 </div>
 </div>
+</div>
 
 
           </div>
@@ -202,10 +268,12 @@
         <div class="sphinxsidebarwrapper">
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Welcome to stockservice&#8217;s documentation!</a><ul>
+<li><a class="reference internal" href="#">Welcome to Stock Service&#8217;s documentation!</a><ul>
+<li><a class="reference internal" href="#populating-the-cache">Populating the cache</a><ul>
 <li><a class="reference internal" href="#exceptions">Exceptions</a></li>
-<li><a class="reference internal" href="#classes">Classes</a></li>
 <li><a class="reference internal" href="#methods">Methods</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
