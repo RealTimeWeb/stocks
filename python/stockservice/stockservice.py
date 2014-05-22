@@ -342,9 +342,8 @@ def _fetch_stock_info(params):
     dict['last_trade_date_and_time'] = dict.pop('lt')
     dict['ticker'] = dict.pop('t')
 
-
     if _CONNECTED and _EDITABLE:
-        _add_to_cache(query, result)
+        _add_to_cache(query, json_res)
 
     return json_res
 
