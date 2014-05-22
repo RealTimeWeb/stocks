@@ -5,10 +5,6 @@ import json
 HEADER = {'User-Agent': 'RealTimeWeb Stock library for educational purposes'}
 PYTHON_3 = sys.version_info >= (3, 0)
 
-_CACHE = {}
-_CACHE_COUNTER = {}
-_CONNECTED = False
-
 if PYTHON_3:
     import urllib.error
     import urllib.request as request
@@ -33,18 +29,19 @@ def _parse_float(value, default=0.0):
     except ValueError:
         return default
 
-def _iteritems(dict_):
+
+def _iteritems(_dict):
     """
     Internal method to factor-out Py2-to-3 differences in dictionary item
         iterator methods
 
-    :param dict dict_: the dictionary to parse
+    :param dict _dict: the dictionary to parse
     :returns: the iterable dictionary
     """
     if PYTHON_3:
-        return dict_.items()
+        return _dict.items()
     else:
-        return dict_.iteritems()
+        return _dict.iteritems()
 
 
 def _urlencode(query, params):
@@ -95,6 +92,65 @@ def _recursively_convert_unicode_to_str(input):
 ################################################################################
 # Cache
 ################################################################################
+
+_CACHE = {}
+_CACHE_COUNTER = {}
+_EDITABLE = False
+_CONNECTED = True
+_PATTERN = "repeat"
+
+
+def _start_editing(pattern="repeat"):
+    """
+    Start adding seen entries to the cache. So, every time that you make a request,
+    it will be saved to the cache. You must :ref:`_save_cache` to save the
+    newly edited cache to disk, though!
+    """
+    global _EDITABLE, _PATTERN
+    _EDITABLE = True
+    _PATTERN = pattern
+
+
+def _stop_editing():
+    """
+    Stop adding seen entries to the cache.
+    """
+    global _EDITABLE
+    _EDITABLE = False
+
+
+def _add_to_cache(key, value):
+    """
+    Internal method to add a new key-value to the local cache.
+    :param str key: The new url to add to the cache
+    :param str value: The HTTP response for this key.
+    :returns: void
+    """
+    if key in _CACHE:
+        _CACHE[key].append(value)
+    else:
+        _CACHE[key] = [_PATTERN, value]
+        _CACHE_COUNTER[key] = 0
+
+
+def _clear_key(key):
+    """
+    Internal method to remove a key from the local cache.
+    :param str key: The url to remove from the cache
+    """
+    if key in _CACHE:
+        del _CACHE[key]
+
+
+def _save_cache(filename="cache.json"):
+    """
+    Internal method to save the cache in memory to a file, so that it can be used later.
+
+    :param str filename: the location to store this at.
+    """
+    with open(filename, 'w') as f:
+        json.dump({"data": _CACHE, "metadata": ""}, f)
+
 
 def _lookup(key):
     """
@@ -219,12 +275,12 @@ class Stock(object):
         if json_data is None:
             return Stock()
         try:
-            chg_num = _parse_float(json_data['c'])
-            chg_per = _parse_float(json_data['cp'])
-            ex_name = json_data['e']
-            lst_trd_price = _parse_float(json_data['l'])
-            lst_trd_date_time = json_data['lt']
-            tick = json_data['t']
+            chg_num = _parse_float(json_data[0]['change_number'])
+            chg_per = _parse_float(json_data[0]['change_percentage'])
+            ex_name = json_data[0]['exchange_name']
+            lst_trd_price = _parse_float(json_data[0]['last_trade_price'])
+            lst_trd_date_time = json_data[0]['last_trade_date_and_time']
+            tick = json_data[0]['ticker']
             stock = Stock(chg_num, chg_per, ex_name, lst_trd_price, lst_trd_date_time, tick)
             return stock
         except KeyError:
@@ -263,39 +319,36 @@ def _fetch_stock_info(params):
     result = result.replace("// ", "")  # Remove Strange Double Slashes
     result = result.replace("\n", "")  # Remove All New Lines
 
-    # TODO Check for the loads for a possible failure
-    json_res = json.loads(result)
-    print(type(json_res))
-    print(json_res)
-    # sys.exit()
+    try:
+        json_res = json.loads(result)
+    except ValueError:
+        raise StockServiceException("Internal Error")
 
-    # _get returns a string and json loads turns it into a list
-    # _lookup returns a string and json loads turns it into a dict
-    # even if one item is fetched from _get, there is still a list
-    if isinstance(json_res, list):
-        return json_res
-    # TODO Make the approtiate change since the cache now always returns a list
-    # elif isinstance(json_res, dict):
-    #     list_response = [json_res]
-    #     return list_response
-    else:
-        raise StockServiceException("There was an internal error")
+    dict = json_res[0]
+
+    dict['change_number'] = dict.pop('c')
+    dict['change_percentage'] = dict.pop('cp')
+    dict['exchange_name'] = dict.pop('e')
+    dict['last_trade_price'] = dict.pop('l')
+    dict['last_trade_date_and_time'] = dict.pop('lt')
+    dict['ticker'] = dict.pop('t')
 
 
-def get_stock_information(tickers):
+    if _CONNECTED and _EDITABLE:
+        _add_to_cache(query, result)
+
+    return json_res
+
+
+def get_stock_information(ticker):
     """
     Retrieves current stock information.
 
     """
-    if not isinstance(tickers, str):
+    if not isinstance(ticker, str):
         raise StockServiceException("Please enter a string of Stock Tickers")
 
-    params = {'q': tickers}
+    params = {'q': ticker}
     json_res = _fetch_stock_info(params)
-
     stock = Stock._from_json(json_res)
     return stock._to_dict()
-
-    # TODO create an object from the json and return the object._to_dict()
-    #
-    # return json_res
