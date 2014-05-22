@@ -46,25 +46,58 @@
 <p>The Stock Service library offers access to the Google&#8217;s Finance feed.
 This is stock data available from U.S. exchanges such as NASDAQ and NYSE and
 covers a wide variety of stocks.</p>
-<p>The information that is available includes the change for a stock since the
-opening bell, the percentage change for a stock since the opening bell, the
-exchange that a stock is listed under, the last trade price for a stock,
-the last trade date and time for a stock, and the ticker name for a stock</p>
-<dl class="docutils">
-<dt>Note that this data stream has a very high velocity - if you check every five</dt>
-<dd>minutes, you&#8217;ll find it may have already changed.</dd>
-</dl>
+<p>Note that this data stream has a very high velocity - if you check every five minutes, you&#8217;ll find it may have already changed.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">stockservice</span>
 </pre></div>
 </div>
 <p>You can get information for any stock, for example let&#8217;s get information for Apple</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">stock_dict</span> <span class="o">=</span> <span class="n">stockservice</span><span class="o">.</span><span class="n">get_stock_information</span><span class="p">(</span><span class="s">&quot;AAPL&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">stock_dict</span>
-<span class="go">{&#39;last_trade_date_and_time&#39;: u&#39;May 22, 11:25AM EDT&#39;, &#39;ticker_name&#39;: u&#39;AAPL&#39;,</span>
-<span class="go">&#39;last_trade_price&#39;: 605.51, &#39;exchange_name&#39;: u&#39;NASDAQ&#39;,</span>
-<span class="go">&#39;change_percentage&#39;: -0.13, &#39;change_number&#39;: -0.8}</span>
+<span class="go">{&#39;last_trade_date_and_time&#39;: u&#39;May 22, 11:25AM EDT&#39;, &#39;ticker_name&#39;: u&#39;AAPL&#39;, &#39;last_trade_price&#39;: 605.51, &#39;exchange_name&#39;: u&#39;NASDAQ&#39;, &#39;change_percentage&#39;: -0.13, &#39;change_number&#39;: -0.8}</span>
 </pre></div>
 </div>
+<p>If you wish to access information within the dictionary, you can do so by
+specifying the key to use and the value will be returned.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">stock_dict</span><span class="p">[</span><span class="s">&#39;change_number&#39;</span><span class="p">]</span>
+<span class="go">0.99</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stock_dict</span><span class="p">[</span><span class="s">&#39;last_trade_date_and_time&#39;</span><span class="p">]</span>
+<span class="go">&#39;May 22, 11:25AM EDT&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stock_dict</span><span class="p">[</span><span class="s">&#39;last_trade_price&#39;</span><span class="p">]</span>
+<span class="go">605.51</span>
+</pre></div>
+</div>
+<p>Here is the complete list of information that can be retrieved from the dictionary</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="32%" />
+<col width="68%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Keys</th>
+<th class="head">Explanation</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>last_trade_date_and_time</td>
+<td>last trade date and time for a stock</td>
+</tr>
+<tr class="row-odd"><td>ticker_name</td>
+<td>ticker name for a stock</td>
+</tr>
+<tr class="row-even"><td>last_trade_price</td>
+<td>last trade price for a stock</td>
+</tr>
+<tr class="row-odd"><td>exchange_name</td>
+<td>exchange that a stock is listed under</td>
+</tr>
+<tr class="row-even"><td>change_percentage</td>
+<td>percentage change for a stock since the opening bel</td>
+</tr>
+<tr class="row-odd"><td>change_number</td>
+<td>decimal change for a stock since the opening bell</td>
+</tr>
+</tbody>
+</table>
 <p>The built-in cache allows you to work online:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">stockservice</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="c"># unnecessary: default is connected</span>
 </pre></div>
@@ -72,7 +105,7 @@ the last trade date and time for a stock, and the ticker name for a stock</p>
 <p>or offline:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">stockservice</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">stockservice</span><span class="o">.</span><span class="n">get_stock_information</span><span class="p">(</span><span class="s">&quot;AAPL&quot;</span><span class="p">)</span>
-<span class="go">{&#39;last_trade_date_and_time&#39;: u&#39;May 21, 11:26AM EDT&#39;, &#39;ticker_name&#39;: u&#39;AAPL&#39;, &#39;last_trade_price&#39;: 603.55, &#39;exchange_name&#39;: u&#39;NASDAQ&#39;, &#39;change_percentage&#39;: -0.19, &#39;change_number&#39;: -1.16}</span>
+<span class="go">{&#39;last_trade_date_and_time&#39;: u&#39;May 21, 11:25AM EDT&#39;, &#39;ticker_name&#39;: u&#39;AAPL&#39;, &#39;last_trade_price&#39;: 603.55, &#39;exchange_name&#39;: u&#39;NASDAQ&#39;, &#39;change_percentage&#39;: -0.19, &#39;change_number&#39;: -1.16}</span>
 </pre></div>
 </div>
 <p>But remember there must be data in the cache already!</p>
@@ -128,85 +161,6 @@ stock information for google</p>
 <div class="section" id="methods">
 <h3>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
-<dt id="stockservice._iteritems">
-<tt class="descclassname">stockservice.</tt><tt class="descname">_iteritems</tt><big>(</big><em>_dict</em><big>)</big><a class="headerlink" href="#stockservice._iteritems" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Internal method to factor-out Py2-to-3 differences in dictionary item</dt>
-<dd>iterator methods</dd>
-</dl>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>_dict</strong> (<em>dict</em>) &#8211; the dictionary to parse</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the iterable dictionary</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="stockservice._get">
-<tt class="descclassname">stockservice.</tt><tt class="descname">_get</tt><big>(</big><em>url</em><big>)</big><a class="headerlink" href="#stockservice._get" title="Permalink to this definition">¶</a></dt>
-<dd><p>Internal method to convert a URL into it&#8217;s response (a <em>str</em>).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>url</strong> (<em>str</em>) &#8211; the url to request a response from</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the <em>str</em> response</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="stockservice._urlencode">
-<tt class="descclassname">stockservice.</tt><tt class="descname">_urlencode</tt><big>(</big><em>query</em>, <em>params</em><big>)</big><a class="headerlink" href="#stockservice._urlencode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Internal method to combine the url and params into a single url string.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>query</strong> (<em>str</em>) &#8211; the base url to query</li>
-<li><strong>params</strong> (<em>dict</em>) &#8211; the parameters to send to the url</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a <em>str</em> of the full url</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="stockservice._lookup">
-<tt class="descclassname">stockservice.</tt><tt class="descname">_lookup</tt><big>(</big><em>key</em><big>)</big><a class="headerlink" href="#stockservice._lookup" title="Permalink to this definition">¶</a></dt>
-<dd><p>Internal method that looks up a key in the local cache.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) &#8211; Get the value based on the key from the cache.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="stockservice._recursively_convert_unicode_to_str">
-<tt class="descclassname">stockservice.</tt><tt class="descname">_recursively_convert_unicode_to_str</tt><big>(</big><em>input</em><big>)</big><a class="headerlink" href="#stockservice._recursively_convert_unicode_to_str" title="Permalink to this definition">¶</a></dt>
-<dd><p>Force the given input to only use <cite>str</cite> instead of <cite>bytes</cite> or <cite>unicode</cite>.</p>
-<p>This works even if the input is a dict, list,</p>
-</dd></dl>
-
-<dl class="function">
 <dt id="stockservice.connect">
 <tt class="descclassname">stockservice.</tt><tt class="descname">connect</tt><big>(</big><big>)</big><a class="headerlink" href="#stockservice.connect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connect to the online data source in order to get up-to-date information.</p>
@@ -229,22 +183,6 @@ stock information for google</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">void</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="stockservice._fetch_stock_info">
-<tt class="descclassname">stockservice.</tt><tt class="descname">_fetch_stock_info</tt><big>(</big><em>params</em><big>)</big><a class="headerlink" href="#stockservice._fetch_stock_info" title="Permalink to this definition">¶</a></dt>
-<dd><p>Internal method to form and query the server</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>params</strong> (<em>dict</em>) &#8211; the parameters to pass to the server</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the JSON response object</td>
 </tr>
 </tbody>
 </table>
