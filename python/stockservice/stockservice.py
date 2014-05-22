@@ -284,12 +284,12 @@ class Stock(object):
         if json_data is None:
             return Stock()
         try:
-            chg_num = _parse_float(json_data[0]['change_number'])
-            chg_per = _parse_float(json_data[0]['change_percentage'])
-            ex_name = json_data[0]['exchange_name']
-            lst_trd_price = _parse_float(json_data[0]['last_trade_price'])
-            lst_trd_date_time = json_data[0]['last_trade_date_and_time']
-            tick = json_data[0]['ticker']
+            chg_num = _parse_float(json_data[0]['c'])
+            chg_per = _parse_float(json_data[0]['cp'])
+            ex_name = json_data[0]['e']
+            lst_trd_price = _parse_float(json_data[0]['l'])
+            lst_trd_date_time = json_data[0]['lt']
+            tick = json_data[0]['t']
             stock = Stock(chg_num, chg_per, ex_name, lst_trd_price, lst_trd_date_time, tick)
             return stock
         except KeyError:
@@ -332,15 +332,6 @@ def _fetch_stock_info(params):
         json_res = json.loads(result)
     except ValueError:
         raise StockServiceException("Internal Error")
-
-    dict = json_res[0]
-
-    dict['change_number'] = dict.pop('c')
-    dict['change_percentage'] = dict.pop('cp')
-    dict['exchange_name'] = dict.pop('e')
-    dict['last_trade_price'] = dict.pop('l')
-    dict['last_trade_date_and_time'] = dict.pop('lt')
-    dict['ticker'] = dict.pop('t')
 
     if _CONNECTED and _EDITABLE:
         _add_to_cache(query, json_res)
