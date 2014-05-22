@@ -25,9 +25,7 @@ You can get information for any stock, for example let's get information for App
 
 >>> stock_dict = stockservice.get_stock_information("AAPL")
 >>> stock_dict
-{'last_trade_date_and_time': u'May 22, 11:25AM EDT', 'ticker_name': u'AAPL',
-'last_trade_price': 605.51, 'exchange_name': u'NASDAQ',
-'change_percentage': -0.13, 'change_number': -0.8}
+{'last_trade_date_and_time': u'May 22, 11:25AM EDT', 'ticker_name': u'AAPL', 'last_trade_price': 605.51, 'exchange_name': u'NASDAQ', 'change_percentage': -0.13, 'change_number': -0.8}
 
 .. Other Possible Fields
     id              Internal Google Security ID?
