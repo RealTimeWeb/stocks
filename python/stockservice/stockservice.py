@@ -80,7 +80,9 @@ def _recursively_convert_unicode_to_str(input):
     This works even if the input is a dict, list,
     """
     if isinstance(input, dict):
-        return {_recursively_convert_unicode_to_str(key): _recursively_convert_unicode_to_str(value) for key, value in input.items()}
+        return {_recursively_convert_unicode_to_str(
+            key): _recursively_convert_unicode_to_str(value) for key, value in
+                input.items()}
     elif isinstance(input, list):
         return [_recursively_convert_unicode_to_str(element) for element in input]
     elif not PYTHON_3:
