@@ -119,16 +119,18 @@ To use that cached file, specify the json file name when you call disconnect():
 
 Finally, you can put multiple entries into the cache for a given input, simulating multiple calls. These items will be appended. If the cache runs out, it will start returning empty reports.
 
->>> stockservice.connect()
->>> stockservice._start_editing()
->>> goog_stock = stockservice.get_stock_information("GOOG")
->>> aapl_stock = stockservice.get_stock_information("AAPL")
->>> stockservice._save_cache()
->>> stockservice.disconnect()
->>> stockservice.get_stock_information("GOOG")
-{'last_trade_date_and_time': u'May 22, 12:40PM EDT', 'ticker_name': u'GOOG', 'last_trade_price': 542.66, 'exchange_name': u'NASDAQ', 'change_percentage': 0.69, 'change_number': 3.72}
->>> stockservice.get_stock_information("AAPL")
-{'last_trade_date_and_time': u'May 21, 11:26AM EDT', 'ticker_name': u'AAPL', 'last_trade_price': 603.55, 'exchange_name': u'NASDAQ', 'change_percentage': -0.19, 'change_number': -1.16}
+.. code-block:: python
+
+  >>> stockservice.connect()
+  >>> stockservice._start_editing()
+  >>> goog_stock = stockservice.get_stock_information("GOOG")
+  >>> aapl_stock = stockservice.get_stock_information("AAPL")
+  >>> stockservice._save_cache()
+  >>> stockservice.disconnect()
+  >>> stockservice.get_stock_information("GOOG")
+  {'last_trade_date_and_time': u'May 22, 12:40PM EDT', 'ticker_name': u'GOOG', 'last_trade_price': 542.66, 'exchange_name': u'NASDAQ', 'change_percentage': 0.69, 'change_number': 3.72}
+  >>> stockservice.get_stock_information("AAPL")
+  {'last_trade_date_and_time': u'May 21, 11:26AM EDT', 'ticker_name': u'AAPL', 'last_trade_price': 603.55, 'exchange_name': u'NASDAQ', 'change_percentage': -0.19, 'change_number': -1.16}
 
 
 Exceptions
