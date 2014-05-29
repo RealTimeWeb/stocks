@@ -13,6 +13,8 @@ covers a wide variety of stocks.
 
 Note that this data stream has a very high velocity - if you check every five minutes, you'll find it may have already changed.
 
+.. code-block:: python
+
   >>> import stockservice
 
 You can get information for any stock, for example let's get information for Apple
@@ -129,7 +131,9 @@ stock information for google
 
 To use that cached file, specify the json file name when you call disconnect():
 
->>> stockservice.disconnect("goog.json")
+.. code-block:: python
+
+  >>> stockservice.disconnect("goog.json")
 
 Finally, you can put multiple entries into the cache for a given input, simulating multiple calls. These items will be appended. If the cache runs out, it will start returning empty reports.
 
