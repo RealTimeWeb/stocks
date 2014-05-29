@@ -13,23 +13,27 @@ covers a wide variety of stocks.
 
 Note that this data stream has a very high velocity - if you check every five minutes, you'll find it may have already changed.
 
->>> import stockservice
+  >>> import stockservice
 
 You can get information for any stock, for example let's get information for Apple
 
->>> stock_dict = stockservice.get_stock_information("AAPL")
->>> stock_dict
-{'last_trade_date_and_time': u'May 22, 11:25AM EDT', 'ticker_name': u'AAPL', 'last_trade_price': 605.51, 'exchange_name': u'NASDAQ', 'change_percentage': -0.13, 'change_number': -0.8}
+.. code-block:: python
+
+  >>> stock_dict = stockservice.get_stock_information("AAPL")
+  >>> stock_dict
+  {'last_trade_date_and_time': u'May 22, 11:25AM EDT', 'ticker_name': u'AAPL', 'last_trade_price': 605.51, 'exchange_name': u'NASDAQ', 'change_percentage': -0.13, 'change_number': -0.8}
 
 If you wish to access information within the dictionary, you can do so by
 specifying the key to use and the value will be returned.
 
->>> stock_dict['change_number']
-0.99
->>> stock_dict['last_trade_date_and_time']
-'May 22, 11:25AM EDT'
->>> stock_dict['last_trade_price']
-605.51
+.. code-block:: python
+
+  >>> stock_dict['change_number']
+  0.99
+  >>> stock_dict['last_trade_date_and_time']
+  'May 22, 11:25AM EDT'
+  >>> stock_dict['last_trade_price']
+  605.51
 
 Here is the complete list of information that can be retrieved from the dictionary
 
@@ -77,27 +81,35 @@ change_number             decimal change for a stock since the opening bell
 
 The built-in cache allows you to work online:
 
->>> stockservice.connect() # unnecessary: default is connected
+.. code-block:: python
+
+  >>> stockservice.connect() # unnecessary: default is connected
 
 or offline:
 
->>> stockservice.disconnect()
->>> stockservice.get_stock_information("AAPL")
-{'last_trade_date_and_time': u'May 21, 11:25AM EDT', 'ticker_name': u'AAPL', 'last_trade_price': 603.55, 'exchange_name': u'NASDAQ', 'change_percentage': -0.19, 'change_number': -1.16}
+.. code-block:: python
+
+  >>> stockservice.disconnect()
+  >>> stockservice.get_stock_information("AAPL")
+  {'last_trade_date_and_time': u'May 21, 11:25AM EDT', 'ticker_name': u'AAPL', 'last_trade_price': 603.55, 'exchange_name': u'NASDAQ', 'change_percentage': -0.19, 'change_number': -1.16}
 
 But remember there must be data in the cache already!
 
->>> stock = stockservice.get_stock_information("AAPL")
-stockservice.StockServiceException: There were no results
+.. code-block:: python
+
+  >>> stock = stockservice.get_stock_information("AAPL")
+  stockservice.StockServiceException: There were no results
 
 Populating the cache
 ^^^^^^^^^^^^^^^^^^^^
 
 Say you want to add Apple's stock (AAPL) to the cache
 
->>> stockservice._start_editing()
->>> stock = stockservice.get_stock_information("AAPL")
->>> stockservice._save_cache()
+.. code-block:: python
+
+  >>> stockservice._start_editing()
+  >>> stock = stockservice.get_stock_information("AAPL")
+  >>> stockservice._save_cache()
 
 Now the file "cache.json" file will have an entry for ("AAPL"), and
 you can use that as an input to the function when disconnected.
@@ -109,9 +121,11 @@ disconnect() method.
 For example, this will populate a file called "goog.json", which will contain
 stock information for google
 
->>> stockservice._start_editing()
->>> goog_stock = stockservice.get_stock_information("GOOG")
->>> stockservice._save_cache('goog.json')
+.. code-block:: python
+
+  >>> stockservice._start_editing()
+  >>> goog_stock = stockservice.get_stock_information("GOOG")
+  >>> stockservice._save_cache('goog.json')
 
 To use that cached file, specify the json file name when you call disconnect():
 
