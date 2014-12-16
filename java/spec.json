@@ -1,0 +1,77 @@
+{
+    "metadata": {
+        "name": "Stock Service",
+        "description": "Get the latest information about stocks.",
+        "version": 1,
+        "author": "Peeratham Techapalokul",
+        "contact": "tpeera4@vt.edu"
+    },
+    "objects": {
+        "Stock": {
+            "format": "json",
+            "description": "A structured representation of stock information, including ticker symbol, latest sale price, and price change since yesterday.",
+            "fields": {
+                "id": {
+                    "type": "integer",
+                    "path": "id",
+                    "description": "The unique ID number for this ticker symbol"
+                },
+                "ticker": {
+                    "type": "string",
+                    "path": "t",
+                    "description": "The Ticker Symbol (e.g. AAPL)"
+                },
+                "exchange": {
+                    "type": "string",
+                    "path": "e",
+                    "description": "The name of the exchange (e.g. NASDAQ)"
+                },
+                "last": {
+                    "type": "float",
+                    "path": "l",
+                    "description": "The latest sale price for this stock."
+                },
+                "last_trade_date": {
+                    "type": "string",
+                    "path": "lt",
+                    "description": "The entire date of the last trade."
+                },
+                "last_trade_time": {
+                    "type": "string",
+                    "path": "ltt",
+                    "description": "The time of the last trade."
+                },
+                "change": {
+                    "type": "float",
+                    "path": "c",
+                    "description": "The price change since yesterday."
+                },
+                "percent_change": {
+                    "type": "float",
+                    "path": "cp",
+                    "description": "The percent price change since yesterday."
+                }
+            }
+        }
+    },
+    "functions": {
+        "getStockInfo": {
+            "url": "http://www.google.com/finance/info",
+            "verb": "get",
+            "format": "json",
+            "description": "Retrieves current stock information.",
+            "output": "Stock",
+            "post": "[0]",
+            "comment": "Might need to consume first two characters, which appear to be double slashes",
+            "inputs": {
+                "ticker": {
+                    "path": "q",
+                    "type": "string",
+                    "indexable": true,
+                    "description": "A comma separated list of ticker symbols (e.g. \"AAPL, MSFT, CSCO\").",
+                    "order": 0
+                }
+            }
+        }
+    }
+}
