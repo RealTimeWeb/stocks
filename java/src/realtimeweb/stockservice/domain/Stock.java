@@ -1,210 +1,184 @@
 package realtimeweb.stockservice.domain;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+
+
 
 /**
  * A structured representation of stock information, including ticker symbol, latest sale price, and price change since yesterday.
  */
 public class Stock {
 	
-	
-	private int id;
-	private String ticker;
-	private String exchange;
-	private double last;
-	private String last_Trade_Date;
-	private String last_Trade_Time;
-	private double change;
-	private double percent_Change;
-	
-	
-	/**
-	 * The unique ID number for this ticker symbol
-	
-	 * @return int
-	 */
-	public int getId() {
-		return this.id;
-	}
-	
-	/**
-	 * 
-	 * @param id The unique ID number for this ticker symbol
-	 */
-	public void setId(int id) {
-		this.id = id;
-	}
-	
-	/**
-	 * The Ticker Symbol (e.g. AAPL)
-	
-	 * @return String
-	 */
-	public String getTicker() {
-		return this.ticker;
-	}
-	
-	/**
-	 * 
-	 * @param ticker The Ticker Symbol (e.g. AAPL)
-	 */
-	public void setTicker(String ticker) {
-		this.ticker = ticker;
-	}
-	
-	/**
-	 * The name of the exchange (e.g. NASDAQ)
-	
-	 * @return String
-	 */
-	public String getExchange() {
-		return this.exchange;
-	}
-	
-	/**
-	 * 
-	 * @param exchange The name of the exchange (e.g. NASDAQ)
-	 */
-	public void setExchange(String exchange) {
-		this.exchange = exchange;
-	}
-	
-	/**
-	 * The latest sale price for this stock.
-	
-	 * @return double
-	 */
-	public double getLast() {
-		return this.last;
-	}
-	
-	/**
-	 * 
-	 * @param last The latest sale price for this stock.
-	 */
-	public void setLast(double last) {
-		this.last = last;
-	}
-	
-	/**
-	 * The entire date of the last trade.
-	
-	 * @return String
-	 */
-	public String getLast_Trade_Date() {
-		return this.last_Trade_Date;
-	}
-	
-	/**
-	 * 
-	 * @param last_Trade_Date The entire date of the last trade.
-	 */
-	public void setLast_Trade_Date(String last_Trade_Date) {
-		this.last_Trade_Date = last_Trade_Date;
-	}
-	
-	/**
-	 * The time of the last trade.
-	
-	 * @return String
-	 */
-	public String getLast_Trade_Time() {
-		return this.last_Trade_Time;
-	}
-	
-	/**
-	 * 
-	 * @param last_Trade_Time The time of the last trade.
-	 */
-	public void setLast_Trade_Time(String last_Trade_Time) {
-		this.last_Trade_Time = last_Trade_Time;
-	}
-	
-	/**
-	 * The price change since yesterday.
-	
-	 * @return double
-	 */
-	public double getChange() {
-		return this.change;
-	}
-	
-	/**
-	 * 
-	 * @param change The price change since yesterday.
-	 */
-	public void setChange(double change) {
-		this.change = change;
-	}
-	
-	/**
-	 * The percent price change since yesterday.
-	
-	 * @return double
-	 */
-	public double getPercent_Change() {
-		return this.percent_Change;
-	}
+    private Double percent_Change;
+    private String exchange;
+    private String last_Trade_Date;
+    private String last_Trade_Time;
+    private Double last;
+    private String ticker;
+    private Long id;
+    private Double change;
+    
+    
+    /*
+     * @return The percent price change since yesterday.
+     */
+    public Double getPercent_Change() {
+        return this.percent_Change;
+    }
+    
+    /*
+     * @param The percent price change since yesterday.
+     * @return Double
+     */
+    public void setPercent_Change(Double percent_Change) {
+        this.percent_Change = percent_Change;
+    }
+    
+    /*
+     * @return The name of the exchange (e.g. NASDAQ)
+     */
+    public String getExchange() {
+        return this.exchange;
+    }
+    
+    /*
+     * @param The name of the exchange (e.g. NASDAQ)
+     * @return String
+     */
+    public void setExchange(String exchange) {
+        this.exchange = exchange;
+    }
+    
+    /*
+     * @return The entire date of the last trade.
+     */
+    public String getLast_Trade_Date() {
+        return this.last_Trade_Date;
+    }
+    
+    /*
+     * @param The entire date of the last trade.
+     * @return String
+     */
+    public void setLast_Trade_Date(String last_Trade_Date) {
+        this.last_Trade_Date = last_Trade_Date;
+    }
+    
+    /*
+     * @return The time of the last trade.
+     */
+    public String getLast_Trade_Time() {
+        return this.last_Trade_Time;
+    }
+    
+    /*
+     * @param The time of the last trade.
+     * @return String
+     */
+    public void setLast_Trade_Time(String last_Trade_Time) {
+        this.last_Trade_Time = last_Trade_Time;
+    }
+    
+    /*
+     * @return The latest sale price for this stock.
+     */
+    public Double getLast() {
+        return this.last;
+    }
+    
+    /*
+     * @param The latest sale price for this stock.
+     * @return Double
+     */
+    public void setLast(Double last) {
+        this.last = last;
+    }
+    
+    /*
+     * @return The Ticker Symbol (e.g. AAPL)
+     */
+    public String getTicker() {
+        return this.ticker;
+    }
+    
+    /*
+     * @param The Ticker Symbol (e.g. AAPL)
+     * @return String
+     */
+    public void setTicker(String ticker) {
+        this.ticker = ticker;
+    }
+    
+    /*
+     * @return The unique ID number for this ticker symbol
+     */
+    public Long getId() {
+        return this.id;
+    }
+    
+    /*
+     * @param The unique ID number for this ticker symbol
+     * @return Integer
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
+    /*
+     * @return The price change since yesterday.
+     */
+    public Double getChange() {
+        return this.change;
+    }
+    
+    /*
+     * @param The price change since yesterday.
+     * @return Double
+     */
+    public void setChange(Double change) {
+        this.change = change;
+    }
+    
 	
 	/**
-	 * 
-	 * @param percent_Change The percent price change since yesterday.
-	 */
-	public void setPercent_Change(double percent_Change) {
-		this.percent_Change = percent_Change;
-	}
-	
-	
-	
-	/**
-	 * A structured representation of stock information, including ticker symbol, latest sale price, and price change since yesterday.
+	 * Creates a string based representation of this Stock.
 	
 	 * @return String
 	 */
 	public String toString() {
-		return "Stock[" + id + ", " + ticker + ", " + exchange + ", " + last + ", " + last_Trade_Date + ", " + last_Trade_Time + ", " + change + ", " + percent_Change + "]";
+		return "Stock[" +percent_Change+", "+exchange+", "+last_Trade_Date+", "+last_Trade_Time+", "+last+", "+ticker+", "+id+", "+change+"]";
 	}
 	
 	/**
-	 * Internal constructor to create a Stock from a Json representation.
-	 * @param json The raw json data that will be parsed.
-	 * @param gson The Gson parser. See <a href='https://code.google.com/p/google-gson/'>https://code.google.com/p/google-gson/</a> for more information.
+	 * Internal constructor to create a Stock from a json representation.
+	 * @param map The raw json data that will be parsed.
 	 * @return 
 	 */
-	public  Stock(JsonObject json, Gson gson) {
-		this.id = json.get("id").getAsInt();
-		this.ticker = json.get("t").getAsString();
-		this.exchange = json.get("e").getAsString();
-		this.last = json.get("l").getAsDouble();
-		this.last_Trade_Date = json.get("lt").getAsString();
-		this.last_Trade_Time = json.get("ltt").getAsString();
-		this.change = json.get("c").getAsDouble();
-		this.percent_Change = json.get("cp").getAsDouble();
-	}
-	
-	/**
-	 * Regular constructor to create a Stock.
-	 * @param id The unique ID number for this ticker symbol
-	 * @param ticker The Ticker Symbol (e.g. AAPL)
-	 * @param exchange The name of the exchange (e.g. NASDAQ)
-	 * @param last The latest sale price for this stock.
-	 * @param last_Trade_Date The entire date of the last trade.
-	 * @param last_Trade_Time The time of the last trade.
-	 * @param change The price change since yesterday.
-	 * @param percent_Change The percent price change since yesterday.
-	 * @return 
-	 */
-	public  Stock(int id, String ticker, String exchange, double last, String last_Trade_Date, String last_Trade_Time, double change, double percent_Change) {
-		this.id = id;
-		this.ticker = ticker;
-		this.exchange = exchange;
-		this.last = last;
-		this.last_Trade_Date = last_Trade_Date;
-		this.last_Trade_Time = last_Trade_Time;
-		this.change = change;
-		this.percent_Change = percent_Change;
-	}
-	
+    public Stock(Map<String, Object> raw) {
+        // TODO: Check that the data has the correct schema.
+        // NOTE: It's much safer to check the Map for fields than to catch a runtime exception.
+        try {
+            this.percent_Change = Double.parseDouble(raw.get("cp").toString());
+            this.exchange = raw.get("e").toString();
+            this.last_Trade_Date = raw.get("lt").toString();
+            this.last_Trade_Time = raw.get("ltt").toString();
+            this.last = Double.parseDouble(raw.get("l").toString());
+            this.ticker = raw.get("t").toString();
+            this.id = Long.parseLong(raw.get("id").toString());
+            this.change = Double.parseDouble(raw.get("c").toString());
+        } catch (NullPointerException e) {
+    		System.err.println("Could not convert the response to a Stock; a field was missing.");
+    		e.printStackTrace();
+    	} catch (ClassCastException e) {
+    		System.err.println("Could not convert the response to a Stock; a field had the wrong structure.");
+    		e.printStackTrace();
+        }
+    
+	}	
 }
